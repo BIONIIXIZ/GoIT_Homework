@@ -1,24 +1,28 @@
 import re
 
-def  normalize_phone(phone_numbers):
-    normalized = []
-    [re.sub(r"\s", "", i) for i in phone_numbers]
-    for numbers in phone_numbers:
-        numbers = re.sub(r"\s", "", numbers)
-        if re.match(r"^\+38\d{10]$", numbers) or re.match(r"^380\d{9}$", numbers):
-            normalized.append(numbers)
-        elif re.match("r^\{10}$", numbers):
-            normalized.append("+38" + numbers)
-        elif re.match("r^\{9}$", numbers):
-            normalized.append("+380" + numbers)
-        elif re.match(r"^\(?\d{3}\)?\d{7}$", numbers):
-            number = re.sub(r"[()]", "", numbers)  # Видаляємо дужки
-            normalized.append("+38" + number)
-        else:
-            normalized.append(numbers)
 
+def normalize_phone(phone_number):
+    """
+    Функція нормалізує лише один номер телефону.
+    """
+    phone_number = re.sub(r"\s|-", "", phone_number)  # Видаляємо пробіли та дефіси
 
-    return normalized
+    if re.match(r"^\+38\d{10}$", phone_number) or re.match(r"^380\d{9}$", phone_number):
+        # if number вже у правильному форматі
+        return phone_number
+    elif re.match(r"^\d{10}$", phone_number):
+        # if номер у форматі 10 цифр
+        return "+38" + phone_number
+    elif re.match(r"^\d{9}$", phone_number):
+        # if номер у форматі 9 цифр
+        return "+380" + phone_number
+    elif re.match(r"^\(?\d{3}\)?\d{7}$", phone_number):
+        # if номер у форматі (XXX)XXXXXXX
+        phone_number = re.sub(r"[()]", "", phone_number)  # Видаляємо дужки
+        return "+38" + phone_number
+    else:
+        # Повертаємо номер у початковому вигляді, якщо він не відповідає жодним правилам
+        return phone_number
 
 
 phone_numbers = [
@@ -32,6 +36,6 @@ phone_numbers = [
     "  380-50-592-12-51 "
 ]
 
-c_phone_numbers = normalize_phone(phone_numbers)
-
-print(c_phone_numbers)
+#Форматування тільки одного номера за індексом [0]
+formatted_number = normalize_phone(phone_numbers[0])
+print(f"Відформатований номер: {formatted_number}")
